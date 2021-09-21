@@ -10,13 +10,10 @@ const config = {
         target: '#svelte',
         adapter: staticAdapter(),
 
-        router: false,
         prerender: {
-            crawl: false,
             enabled: true,
             entries: [ '*' ],
         },
-        hydrate: false,
 
         vite: {
             css: {

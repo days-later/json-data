@@ -12,13 +12,32 @@ The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for t
     }
     $: output = transform( input );
 
-    function copy() {
-        navigator.clipboard.writeText( JSON.stringify( output, null, "\t" ) );
+    let copySuccess: null | boolean = null;
+    async function copy() {
+        try {
+            await navigator.clipboard.writeText( JSON.stringify( output, null, "\t" ) );
+            copySuccess = true;
+            await new Promise( r => setTimeout( r, 800 ) );
+            copySuccess = null;
+        }
+        catch {
+            copySuccess = false;
+            await new Promise( r => setTimeout( r, 2000 ) );
+            copySuccess = null;
+        }
     }
 </script>
 
 <div class="ctrl">
-    <button on:click={copy}>Copy JSON</button>
+    <button
+        on:click={copy}
+        type=button
+
+        class:success={copySuccess===true}
+        class:error={copySuccess===false}
+    >
+        {copySuccess===null ? "Copy JSON" : copySuccess ? 'Copied!' : 'Copy to clipboard failed'}
+    </button>
 </div>
 <main>
     <textarea bind:value={input} />
@@ -50,6 +69,13 @@ The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for t
     button:hover {
         cursor: pointer;
         box-shadow: .15rem .15rem 0 0 #bbb;
+    }
+
+    button.success {
+        background: #cfc;
+    }
+    button.error {
+        background: #fcc;
     }
 
     main {
